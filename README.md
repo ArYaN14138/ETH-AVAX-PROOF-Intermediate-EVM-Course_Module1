@@ -1,81 +1,80 @@
 # ETH-AVAX-PROOF-Intermediate-EVM-Course_Module1
-# ErrorHandlingExample Smart Contract
-# Overview
-The ErrorHandlingExample smart contract demonstrates basic error handling in Solidity using require, revert, and assert. The contract manages a simple counter that can be incremented, decremented, and reset, with appropriate error handling mechanisms for different scenarios.
- # Description
- The ErrorHandlingExample smart contract manages a counter with functions to increment, decrement, and reset it, utilizing require, revert, and assert for robust error handling. It ensures valid operations and enforces conditions to maintain correct counter behavior.
- # Features
- The ErrorHandlingExample smart contract includes the following features:
 
--Counter Management: Maintains a counter variable that can be incremented, decremented, and reset.
+# ProductIDChecker
 
--Input Validation: Uses require to ensure that the increment value is positive, preventing invalid operations.
+## Overview
 
--Error Handling: Utilizes revert to handle specific error conditions when the decrement value exceeds the current counter, providing clear error messages.
+The `ProductIDChecker` is a Solidity smart contract designed to manage and validate product IDs within a specified range. This contract ensures that product IDs fall within the range of 1 to 99, inclusive. It provides functionality to validate, add, and check the validity of product IDs.
 
--Invariant Enforcement: Applies assert to confirm that the counter is reset to zero, ensuring the internal state is as expected.
+## Contract Details
 
--Public Accessibility: Makes the counter variable publicly accessible, allowing users to view its current value at any time.
+### State Variables
 
--Custom Error Messages: Provides specific and informative error messages for better debugging and user experience.
+- **productCount (uint)**: Keeps track of the number of valid products added.
 
- # Functions
-  # incrementCounter
-function incrementCounter(uint increment) public;
+### Functions
 
-This function increases the counter by the specified increment value. It uses the require statement to ensure that the increment is positive.
+1. **assertProductID(uint productID) public pure**
 
-Parameters:
+   This function checks if a given product ID is within the valid range (1 to 99) using the `assert` statement.
+   
+   ```solidity
+   function assertProductID(uint productID) public pure {
+       assert(productID >= 1 && productID <= 99);
+   }```
+2.	**addProduct(uint productID) public returns (uint)**
+	This function increments the productCount if the provided product ID is valid. If the product ID is not valid, it reverts the transaction with an error message.
 
-increment (uint): The value to increment the counter by. Must be greater than zero.
+```solidity
+function addProduct(uint productID) public returns (uint) {
+    if (productID < 1 || productID > 99) {
+        revert("This is not a valid product ID");
+    }
+    productCount += 1;
+    return productCount;
+}
+```
+3.	**isValidProductID(uint productID) public pure returns (bool)**
+   This function checks if the provided product ID is within the valid range using the require statement. It returns true if the product ID is valid.
 
-Errors:
+   ```solidity
+   function isValidProductID(uint productID) public pure returns (bool) {
+    require(productID >= 1 && productID <= 99, "Product ID range should be between 1-99");
+    return true;
+}
+```
+4.	addProductWithChecks(uint productID) public returns (uint)
+ This function combines the use of require, assert, and revert to ensure the product ID is valid before adding it to the productCount.
 
-Throws an error "Increment must be greater than zero" if the increment is not positive.
+```solidity
+function addProductWithChecks(uint productID) public returns (uint) {
+    require(productID >= 1 && productID <= 99, "Product ID range should be between 1-99");
+    
+    // Assert to double-check the product ID is valid
+    assert(productID >= 1 && productID <= 99);
+    
+    // Use revert if product ID is not valid after assert (though this will typically not be reached due to assert)
+    if (productID < 1 || productID > 99) {
+        revert("This is not a valid product ID");
+    }
 
-# decrementCounter
-function decrementCounter(uint decrement) public;
+    productCount += 1;
+    return productCount;
+}
+```
+#Usage
 
-This function decreases the counter by the specified decrement value. It uses the revert statement to handle the case where the decrement value is greater than the current counter value.
+Deploy the ProductIDChecker contract on the Ethereum blockchain. The functions can be called to validate, add, and check product IDs as per the requirements.
 
-Parameters:
+Example
 
-decrement (uint): The value to decrement the counter by. Must not exceed the current counter value.
-
-Errors:
-
-Throws an error "Decrement must not exceed the current counter value" if the decrement is greater than the current counter value.
-
-# resetCounter
-function resetCounter() public;
-
-This function resets the counter to zero. It uses the assert statement to ensure that the counter is indeed reset to zero, enforcing an invariant that should never fail.
-
- # Error Handling Mechanisms
-# require
-The require statement is used to validate input and conditions. It reverts the transaction if the condition is not met, refunding the remaining gas. It's typically used for input validation.
-
-# revert
-The revert statement is used to handle specific error conditions with custom error messages. It explicitly reverts the transaction and can be used to provide more detailed error information.
-
-# assert
-The assert statement is used to check for conditions that should never be false, such as invariants within the contract. It is meant to catch serious errors and bugs. If an assert fails, it indicates a flaw in the contract's logic.
-
-# Usage
-# Increment the Counter:
-Call incrementCounter with a positive value to increase the counter.
-Example: incrementCounter(5) will increase the counter by 5.
-# Decrement the Counter:
-Call decrementCounter with a value that does not exceed the current counter value.
-Example: If the counter is 10, decrementCounter(3) will decrease it to 7.
-# Reset the Counter:
-Call resetCounter to reset the counter to zero.
-Example: resetCounter() will set the counter to 0 and ensure it using assert.
-
-# Project by
-
-- Aryan
+	1.	Deploy the contract.
+	2.	Call addProduct(10) to add a valid product ID.
+	3.	Call isValidProductID(50) to check if a product ID is valid.
+	4.	Call addProductWithChecks(25) to add a product with all checks.
 
 
+## Project By
+- ARYAN
 
- 
+
